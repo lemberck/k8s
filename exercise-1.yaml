@@ -1,0 +1,24 @@
+# Crie um Pod através de um arquivo manifesto YAML com um 
+# container apache, contendo uma label chamada app-type, 
+# com o valor web. Isso servirá para que outras aplicaçẽs identifiquem 
+# seu sistema por esta label e saibam que se trata de uma aplicação web. 
+# Por fim, delete o Pod.
+
+apiVersion: v1
+kind: Pod
+
+metadata :
+  name: pod-ex1
+  labels:
+    app-type: web
+
+spec : 
+  containers:
+    - name: container-apache
+      image: httpd
+
+### Comandos minikube no terminal
+ # minikube start
+ # kubectl apply -f exercise-1.yaml
+ # kubectl get pods
+ # kubectl delete pods pod-ex1
