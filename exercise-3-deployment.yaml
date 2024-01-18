@@ -1,0 +1,44 @@
+# Elabore um arquivo manifesto YAML para criar um Deployment no Kubernetes 
+# chamado frontend-deployment. Este Deployment deve assegurar que quatro 
+# réplicas de um pod estejam rodando a qualquer momento. Cada pod deve 
+# ser configurado com um container utilizando a imagem nginx. Atribua 
+# ao Deployment a label app com o valor frontend, e aos pods a label 
+# env com o valor production, para indicar que eles estão em um ambiente 
+# de produção. Utilize essa mesma label no seletor do Deployment para 
+# gerenciar as réplicas dos pods. 
+# Após aplicar o manifesto e confirmar a criação dos recursos, 
+# faça o rollout padrão da aplicação.Mostre as informações do deployment.
+# Liste todos os recursos criados com esse deployment
+# Delete o deployment e cheque se todos os recursos foram deletados.
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  template:
+    metadata:
+      name: pod-mynginx
+      labels:
+        env: production
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+  selector:
+    matchLabels:
+      env: production
+  replicas: 4
+
+
+### Comandos no terminal com minikube
+ # minikube start
+ # kubectl apply -f exercise-3-deployment.yaml
+ # echo "---Deployments:" && kubectl get deployments && echo "---ReplicaSets:" && kubectl get replicasets && echo "---Pods:" && kubectl get pods
+ # kubectl rollout status deployment.apps/frontend-deployment
+ # kubectl describe deployments.app/frontend-deployment
+ # kubectl get all
+ # kubectl delete deployment frontend-deployment && kubectl get all
