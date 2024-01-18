@@ -19,6 +19,6 @@ spec :
 
 ### Comandos minikube no terminal
  # minikube start
- # kubectl apply -f exercise-1.yaml ## must be no local do arquivo yaml!
+ # kubectl apply -f exercise-1-pod.yaml ## must be no local do arquivo yaml!
  # kubectl get pods
  # kubectl delete pods pod-ex1

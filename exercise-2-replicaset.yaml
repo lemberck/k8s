@@ -1,0 +1,50 @@
+# 2.1 - Criação
+# Crie um ReplicaSet através de um arquivo manifesto YAML que mantenha 
+# quatro réplicas de um pod contendo um container Nginx. O ReplicaSet deve 
+# ter o nome frontend-rs e uma label app com o valor frontend. Cada pod 
+# eplicado deve ter um nome sugerido my-pod-webserver, e incluir duas 
+# labels: apps com o valor my-app e tier com o valor frontend. Essas labels 
+# serão utilizadas para que o ReplicaSet identifique quais pods gerenciar. 
+# Assegure-se de que os pods estejam utilizando a imagem nginx. Depois de 
+# verificar que os pods estão rodando, remova o ReplicaSet.
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend-rs
+  labels:
+    app: frontend
+spec:
+  template: 
+    metadata: 
+      name: my-pod-webserver
+      labels: 
+        apps: my-app
+        tier: frontend
+    spec:
+      containers:
+      - name: my-container-nginx
+        image: nginx
+  selector:
+    matchLabels:
+      apps: my-app
+  replicas: 4
+
+# 2.2 Scale up/down imperative form
+# Sem alterar o o yaml criado, faça um scale up para ter 10 pods rodando
+
+# Sem alterar o o yaml criado, faça um scale down para ter 5 pods 
+# rodando, dos 10 criados. Use o comando watch para ver as mudanças nos pods (ctrl+c para sair)
+
+# Delete todos os pods e o replicaset criado.
+
+### Comandos minikube no terminal
+ # minikube start
+ # kubectl apply -f exercise-2-replicaset.yaml
+ # kubectl get replicasets
+ # kubectl get pods
+ # kubectl scale replicasets frontend-rs --replicas=10 
+ # kubectl get pods
+ # kubectl scale replicasets frontend-rs --replicas=5 && watch kubectl get pods
+ # kubectl delete replicasets frontend-rs
+ # kubectl get pods && kubectl get replicasets
