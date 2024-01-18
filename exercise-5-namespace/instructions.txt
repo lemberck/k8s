@@ -1,0 +1,25 @@
+### Create the namespace from the provided yaml file : backend-namespace.yaml
+
+### Create the two pods from th provided yaml files (tomcat-pod and redis-pod) in the namespace created at the previous step.
+## check if they were created in the correct namespace
+
+### delete the created redis pod at the correct namespace
+
+### delete the namespace and all the resources associated with it.
+
+## Comandos no terminal com minikube
+minikube start
+cd exercise-5-namespace
+
+kubectl apply -f backend-namespace.yaml && kubectl get namespaces
+
+kubectl apply -f redis-pod.yaml -n backend-ns  && kubectl apply -f tomcat-pod.yaml -n backend-ns 
+kubectl get pods -n backend-ns
+
+kubectl delete pods redis-pod -n backend-ns && kubectl get pods -n backend-ns
+
+kubectl delete namespaces backend-ns && kubectl get namespaces && kubectl get pods -n backend-ns
+
+
+
+
