@@ -4,7 +4,7 @@
 # seu sistema por esta label e saibam que se trata de uma aplicação web. 
 # Por fim, delete o Pod.
 
-apiVersion: v1
+apiVersion: v1 # apiVersion do k8s do recurso Pod
 kind: Pod
 
 metadata :
