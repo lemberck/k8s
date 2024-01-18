@@ -1,0 +1,23 @@
+### Create the two pods from th provided yaml files : tomcat-pod and redis-pod.
+### Show the IP of each pod
+### Test the connection between them
+
+
+## Comandos no terminal com minikube
+minikube start
+cd exercise-4-network
+ 
+kubectl apply -f redis-pod.yaml && kubectl apply -f tomcat-pod.yaml && kubectl get pods
+
+kubectl describe pods redis-pod | grep IP
+kubectl describe pods tomcat-pod | grep IP
+
+kubectl exec -it tomcat-pod -- bash ### entra no container do tomcat
+apt update -y
+apt install iputils-ping -y
+ping 172.17.0.3  ### ip do container redis no momento da execução
+<ctrl+c , to stop ping>
+exit ## exit tomcat container
+
+
+
