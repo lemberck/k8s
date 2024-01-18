@@ -17,7 +17,7 @@ spec :
     - name: container-apache
       image: httpd
 
-### Comandos minikube no terminal
+### Comandos no terminal com minikube
  # minikube start
  # kubectl apply -f exercise-1-pod.yaml ## must be no local do arquivo yaml!
  # kubectl get pods

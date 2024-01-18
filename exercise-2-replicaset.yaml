@@ -38,7 +38,7 @@ spec:
 
 # Delete todos os pods e o replicaset criado.
 
-### Comandos minikube no terminal
+### Comandos no terminal com minikube
  # minikube start
  # kubectl apply -f exercise-2-replicaset.yaml
  # kubectl get replicasets
