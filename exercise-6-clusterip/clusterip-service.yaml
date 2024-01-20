@@ -1,0 +1,105 @@
+# Exercício: Implementação de Pod e Serviço ClusterIP no Kubernetes
+# Objetivo: Elabore um arquivo manifesto YAML para criar um namespace 'exercicio-clusterip', um Pod e um Serviço no Kubernetes, ambos no namespace exercicio-clusterip.
+# 1. Criação do Pod 'web-pod':
+#    - Crie um Pod chamado 'web-pod'.
+#    - Atribua ao Pod a label 'type' com o valor 'web-app'.
+#    - Configure o Pod para executar dois contêineres:
+#      - Um contêiner 'web-server-apache' usando a imagem 'httpd', expondo a porta 80.
+#      - Um contêiner 'web-server-tomcat' usando a imagem 'tomcat', expondo a porta 8080.
+
+# 2. Criação do Serviço 'frontend-service':
+#    - Crie um Serviço chamado 'frontend-service' do tipo 'ClusterIP'.
+#    - Configure o Serviço para selecionar Pods com a label 'type: web-app'.
+#    - O Serviço deve expor a porta 86 e encaminhar o tráfego para a porta 86 dos Pods.
+
+# 3. Aplicação e Verificação:
+#    - Aplique o manifesto no Kubernetes e confirme a criação do Pod e do Serviço no namespace correto.
+#    - Verifique o status dos recursos criados no namespace, inclusive do IP do clusterIP.
+
+# 4. Crie, de modo imperativo, um pod com servidor debian que será usado para fazer uma requisição ao serviço criado.
+# - A primeira requisição deve acessar o container apache
+# - A segunda requisição deve acessar o container tomcat
+
+# 5. Limpeza:
+#    - Delete todos os recursos criados.
+#    - Confirme se todos os recursos foram removidos corretamente.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: exercicio-clusterip
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod
+  namespace: exercicio-clusterip
+  labels:
+    type: web-app
+spec:
+  containers:
+    - name: web-server-apache
+      image: httpd
+      ports:
+       - containerPort: 80
+    - name: web-server-tomcat
+      image: tomcat
+      ports: 
+       - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: exercicio-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    type: web-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80 # redireciona para o container do apache
+      #targetPort: 8080 # redireciona para o container do tomcat
+
+      
+
+#############################
+# Pod 'web-pod': Este YAML define um Pod chamado web-pod no namespace exercicio-clusterip. 
+# Este Pod contém dois contêineres: web-server-apache, que roda o servidor Apache na porta 80, e web-server-tomcat, 
+# que roda o servidor Tomcat na porta 8080. Isso significa que, quando este Pod estiver rodando, 
+# haverá dois servidores web operando dentro dele.
+
+# Service 'frontend-service': Além do Pod, o YAML também define um Service chamado frontend-service no mesmo namespace. 
+# Este Service é do tipo ClusterIP, o que significa que ele é acessível apenas dentro do cluster Kubernetes. 
+# Ele é configurado para encaminhar o tráfego recebido na porta 86 para a porta 86 dos Pods que correspondem ao 
+# seletor 'type: web-app'. Isso permite que outros componentes ou serviços dentro do cluster 
+# comuniquem-se com os Pods rotulados como web-app através do frontend-service.
+
+
+### Comandos no terminal com minikube
+ # minikube start
+ # minikube start
+ # cd exercise-6-clusterip
+
+ #### Exercicios 1-3
+ # kubectl apply -f clusterip-service.yaml && kubectl get all -n exercicio-clusterip
+ # --------> o resultado ja mostra o IP do cluster (10.105.199.11, nesse momento) e a porta do service criado
+
+ #### Exercicio 4
+ ## Apache : Deixar no yaml o 'targetPort: 80'
+ # kubectl run -it debian-pod --image=debian --namespace=exercicio-clusterip -- bash
+ # apt update
+ # apt install curl -y
+ # curl 10.105.199.11:80  #### <IP do service ClusterIP criado>:<porta que o service expoe>
+ # --------> o resultado mostra o 'It works!' característico do Apache, ou seja, comunicação com o Apache bem-sucedida.
+
+ ## Tomcat : Modificar no yaml para 'targetPort: 8080', salvar
+ # kubectl apply -f clusterip-service.yaml  ### em outro terminal com minikube ativo, na pasta do exercicio
+ # curl 10.105.199.11:80 ### no terminal anterior, dentro do container debian
+ # --------> o resultado mostra o '...HTTP Status 404...</p><hr class="line" /><h3>Apache Tomcat...', então foi bem-sucedido!
+ # exit ### sai do container debian
+
+ #### Exercicio 5
+ # kubectl delete all --all -n exercicio-clusterip && kubectl delete ns exercicio-clusterip
+ # kubectl get all
