@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: livenessprobe-ns
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-pod
+  namespace: livenessprobe-ns
+spec:
+  containers:
+  - name: liveness-container-test
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600
+    
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 3
+      
+### Comando para acompanhar o teste (leva uns 3 min)
+# kubectl apply -f livenessprob.yaml && sleep 5 && kubectl get pods -n livenessprobe-ns && sleep 30 && kubectl describe pods liveness-pod -n livenessprobe-ns && sleep 35 && kubectl describe pods liveness-pod -n livenessprobe-ns && sleep 30 && kubectl get pods -n livenessprobe-ns && sleep 30 && kubectl describe pods liveness-pod -n livenessprobe-ns && sleep 35 && kubectl describe pods liveness-pod -n livenessprobe-ns && kubectl get pods liveness-pod -n livenessprobe-ns
+# --------> Cheque o numero de RESTARTS do pod
+# kubectl delete ns livenessprobe-ns 
+# kubectl get all
