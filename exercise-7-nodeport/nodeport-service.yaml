@@ -12,7 +12,7 @@
 # O Pod deve ter a label type com o valor web-app.
 
 # Configure o Pod para executar um contêiner:
-# O contêiner deve ser chamado web-server-apache-nodeport.
+# O contêiner deve ser chamado web-server-apache.
 # Deve usar a imagem httpd (apache)
 # O contêiner deve expor a porta 80.
 
