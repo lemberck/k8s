@@ -1,0 +1,85 @@
+# Elabore um arquivo manifesto YAML para criar um namespace exercicio-loadbalancer, 
+# um Pod e um Serviço do tipo LoadBalancer no Kubernetes, ambos localizados dentro 
+# do namespace exercicio-loadbalancer.
+
+# Instruções:
+# 
+# Criação do Namespace:
+# Crie um namespace com o nome exercicio-loadbalancer.
+
+# Criação do Pod 'web-pod':
+# Dentro do namespace exercicio-loadbalancer, crie um Pod chamado web-pod.
+# O Pod deve ter a label type com o valor web-app.
+
+# Configure o Pod para executar um contêiner:
+# O contêiner deve ser chamado web-server-apache.
+# Deve usar a imagem httpd (apache)
+# O contêiner deve expor a porta 80.
+
+# Criação do Serviço 'frontend-service-loadbalancer':
+# Ainda no namespace exercicio-loadbalancer, crie um Serviço chamado frontend-service-loadbalancer.
+# O Serviço deve ser do tipo LoadBalancer.
+# O Serviço deve selecionar Pods com a label type: web-app.
+# Exponha a porta 80 do Serviço e encaminhe o tráfego para a porta 80 dos Pods.
+# Atribua ao Serviço o nodeport 30008, que será usado para acessar o Serviço de fora do cluster (ACESSO EXTERNO).
+
+# Aplicação e Verificação:
+# Aplique o manifesto YAML no Kubernetes.
+# Acesse externamente a aplicação
+
+# Limpeza:
+# Após a conclusão do teste, remova todos os recursos criados.
+# Confirme que todos os recursos foram removidos corretamente do namespace exercicio-loadbalancer.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: exercicio-loadbalancer
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod
+  namespace: exercicio-loadbalancer
+  labels:
+    type: web-app
+spec: 
+  containers:
+    - name: web-server-apache
+      image: httpd
+      ports:
+       - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service-loadbalancer
+  namespace: exercicio-loadbalancer
+spec :
+  type: LoadBalancer
+  selector:
+    type: web-app
+  ports: 
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30008
+
+### Comandos no terminal com minikube
+ # minikube start
+ # cd exercise-8-loadbalancer
+
+ # kubectl apply -f loadbalancer-service.yaml && kubectl get all -n exercicio-loadbalancer
+ # --------> o resultado ja mostra o IP do cluster (10.99.25.155, nesse momento) e a porta:NODEPORT (80:30008/TCP)
+
+ ## Pegar ip do serviço
+ # kubectl get nodes -o yaml | grep address
+ # -------> retorna o endereço para acesso externo (192.168.49.2 , no caso)
+ # -------> Logo, a url de acesso será 192.168.49.2:30008
+
+ ## Acesso externo
+ # curl 192.168.49.2:30008
+ # --------> o resultado mostra o 'It works!' característico do Apache, ou seja, comunicação EXTERNA com o Apache bem-sucedida.
+
+ # kubectl delete ns exercicio-loadbalancer
+ # kubectl get all
